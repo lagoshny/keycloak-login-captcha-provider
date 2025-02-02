@@ -19,6 +19,16 @@ then build provider's sources to `jar` file and copy it with custom keycloak the
 
 All these steps are described in more detail below.
 
+<!-- TOC -->
+* [How to use provider](#how-to-use-provider)
+  * [Run keycloak using docker-compose](#run-keycloak-using-docker-compose)
+  * [Build provider](#build-provider)
+  * [Copy provider and theme to keycloak](#copy-provider-and-theme-to-keycloak)
+  * [Settings keycloak to using the provider](#settings-keycloak-to-using-the-provider)
+  * [Describe login theme changes](#describe-login-theme-changes)
+  * [Debug the provider](#debug-the-provider)
+<!-- TOC -->
+
 ### Run keycloak using docker-compose
 The project has the simple `docker-compose` configuration to start keycloak with prepared configuration.
 
@@ -76,7 +86,7 @@ To check out the provider, *you need*:
 
 Now you can open [login page](http://localhost:8080/realms/test-realm/protocol/openid-connect/auth?client_id=capthca-test&response_type=code&redirect_uri=http://localhost:8080/realms/test-realm/.well-known/openid-configuration) and check captcha.
 
-### Describe changes of login theme
+### Describe login theme changes
 
 To demonstrate how to work with captcha provider the project has custom keycloak login theme.
 
