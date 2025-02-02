@@ -1,0 +1,22 @@
+version: '3.6'
+
+services:
+  mykeycloak:
+    image: quay.io/keycloak/keycloak:20.0.3
+    container_name: mykeycloak
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DEBUG_PORT: "*:8787"
+    volumes:
+      - './src/main/resources/keycloak-config:/opt/keycloak/data/import'
+      - './target/keycloak-login-captcha-provider-1.0.jar:/opt/keycloak/providers/keycloak-login-captcha-provider-1.0.jar'
+      - './src/main/resources/themes/captcha-form:/opt/keycloak/themes/captcha-form'
+    ports:
+      - '8080:8080'
+      - '8787:8787'
+    command:
+      - "--debug"
+      - "start-dev"
+      - "--import-realm"
