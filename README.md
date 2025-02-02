@@ -44,7 +44,39 @@ After build check out the `target` folder. Look there the `keycloak-login-captch
 
 > After any provider changes you need to rebuild it and copy to keycloak server with keycloak restart after that.
 
-### Prepare login theme
+### Copy provider and theme to keycloak
+
+Because keycloak server started at the docker container we can use `docker cp` command:
+
+```bash
+docker cp ./src/main/resources/themes/captcha-form mykeycloak:/opt/keycloak/themes
+docker cp ./target/keycloak-login-captcha-provider-1.0.jar mykeycloak:/opt/keycloak/providers
+```
+
+Restart keycloak server to see the changes.
+
+```bash
+docker-compose restart
+```
+
+### Settings keycloak to using the provider
+
+Started keycloak has *predefined* settings:
+- created new realm `test-realm` and client `capthca-test`
+- to show captcha form added realm Security defences settings:
+```
+frame-src 'self' https://www.google.com https://captcha-api.yandex.ru; frame-ancestors  'self' https://www.google.com https://captcha-api.yandex.ru; object-src 'none';
+```
+- added new Authentication flow: `Copy of browser` that uses the captcha provider and its setup as default flow for `Browser flow`
+
+To check out the provider, *you need*:
+1. Open `capthca-test` client settings and choose `captcha-form` theme.
+2. Open `Authentication` -> `Copy of browser` flow and put your captcha provider site and server keys to `Captcha Login Form` settings.
+3. (Optional) Create some User in `capthca-test` realm to test login page.
+
+Now you can open [login page](http://localhost:8080/realms/test-realm/protocol/openid-connect/auth?client_id=capthca-test&response_type=code&redirect_uri=http://localhost:8080/realms/test-realm/.well-known/openid-configuration) and check captcha.
+
+### Describe changes of login theme
 
 To demonstrate how to work with captcha provider the project has custom keycloak login theme.
 
@@ -78,35 +110,6 @@ And `template.ftl` changes:
 ```
 
 All these changes are simple instruction from captcha providers documentations, only generalized to supply 3 providers at once.
-
-### Copy provider and theme to keycloak
-
-Because keycloak server started at the docker container we can use `docker cp` command:
-
-```bash
-docker cp ./src/main/resources/themes/captcha-form mykeycloak:/opt/keycloak/themes
-docker cp ./target/keycloak-login-captcha-provider-1.0.jar mykeycloak:/opt/keycloak/providers
-
-```
-
-Restart keycloak server to see the changes.
-
-### Settings keycloak to using the provider
-
-Started keycloak has predefined settings:
-- created new realm `test-realm` and client `capthca-test`
-- to show captcha form added realm Security defences settings:
-```
-frame-src 'self' https://www.google.com https://captcha-api.yandex.ru; frame-ancestors  'self' https://www.google.com https://captcha-api.yandex.ru; object-src 'none';
-```
-- added new Authentication flow: `Copy of browser` that uses the captcha provider and its setup as default flow for `Browser flow`
-
-To check out the provider, you need:
-1. Open `capthca-test` client settings and choose `captcha-form` theme.
-2. Open `Authentication` -> `Copy of browser` flow and put your captcha provider site and server keys to `Captcha Login Form` settings.
-3. (Optional) Create some User in `capthca-test` realm to test login page.
-
-Now you can open [login page](http://localhost:8080/realms/test-realm/protocol/openid-connect/auth?client_id=capthca-test&response_type=code&redirect_uri=http://localhost:8080/realms/test-realm/.well-known/openid-configuration) and check captcha.
 
 ### Debug the provider
 
