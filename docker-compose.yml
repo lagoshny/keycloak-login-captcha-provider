@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   mykeycloak:
-    image: quay.io/keycloak/keycloak:20.0.3
+    image: quay.io/keycloak/keycloak:21.1.2
     container_name: mykeycloak
     restart: always
     environment:
